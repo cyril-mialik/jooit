@@ -13,12 +13,20 @@ const getTransitionMode = (route): string => {
 <template>
   <main class="the-center">
     <router-view v-slot="{ Component, route }">
-      <transition
-        :name="getTransitionName(route)"
-        :mode="getTransitionMode(route)"
-      >
-        <component :is="Component" />
-      </transition>
+      <Suspense>
+        <template #default>
+          <transition
+            :name="getTransitionName(route)"
+            :mode="getTransitionMode(route)"
+          >
+            <component :is="Component" />
+          </transition>
+        </template>
+
+        <template #fallback>
+          Content is loading...
+        </template>
+      </Suspense>
     </router-view>
   </main>
 </template>

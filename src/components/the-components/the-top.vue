@@ -1,8 +1,6 @@
 <script setup lang="ts">
   import { computed, ref, defineExpose, onMounted, defineAsyncComponent } from 'vue'
-
   import BaseTop from '@/components/base-components/base-top.vue'
-
   import { MENU } from '@/constants/menu'
 
   const PageMenu = defineAsyncComponent(() =>
@@ -20,7 +18,6 @@
   ])
   const mappedComponents = computed(() => components.value)
   const filteredComponents = computed(() => mappedComponents.value)
-  
   const areComponents = computed(() => Boolean(filteredComponents.value.length))
 
   defineExpose({

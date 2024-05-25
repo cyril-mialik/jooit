@@ -1,14 +1,11 @@
 <script setup lang="ts">
   import { computed, defineExpose } from 'vue'
-
+  import { MENU } from '@/constants/menu'
   import BaseBottom from '@/components/base-components/base-bottom.vue'
 
-  import { MENU } from '@/constants/menu'
-
-  const components = computed(() => [ ])
+  const components = computed(() => [])
   const mappedComponents = computed(() => components.value)
   const filteredComponents = computed(() => mappedComponents.value)
-
   const areComponents = computed(() => Boolean(filteredComponents.length))
 
   defineExpose({
@@ -20,17 +17,25 @@
 <template>
   <footer class="the-bottom">
     <template v-if="areComponents">
-      <base-bottom
-        v-for="component in filteredComponents"
-        v-slot="{ props }"
-        :key="component.name"
-        :props="component.props"
-      >
-        <component
-        :is="component.self"
-        v-bind="props"
-        />
-      </base-bottom>
+      <Suspense>
+        <template #default>
+          <base-top
+            v-for="component in filteredComponents"
+            v-slot="{ props }"
+            :key="component.name"
+            :props="component.props"
+          >
+            <component
+              :is="component.self"
+              v-bind="props"
+            />
+          </base-top>
+        </template>
+
+        <template #fallback>
+          Content is loading...
+        </template>
+      </Suspense>
     </template>
 
     <template v-else>

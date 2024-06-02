@@ -1,42 +1,58 @@
-import type { UseScrollOptions, UseScrollReturn } from '@vueuse/core'
-import type { ComputedRef } from 'vue'
-
-import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import { useRoute } from 'vue-router'
-import { useScroll } from '@vueuse/core'
+import { computed, reactive } from 'vue'
+import type { ComputedRef, DeepReadonly } from 'vue'
 
-interface PageOptions {
-  scrollElement: HTMLElement | null
-  scrollOptions: UseScrollOptions | null
+interface State {
+  components: Map<string, Set<string>>
 }
 
+const state = reactive<State>({
+  components: new Map()
+})
+
 interface PageModule {
-  name: ComputedRef<string>
+  state: DeepReadonly<typeof state>
 
-  scrollData: UseScrollReturn
-
-  init: (options: PageOptions) => void
+  components: ComputedRef<Map<string, Set<string>>>
+  initComponents: (name: string) => void
+  getComponents: (name: string, value: string) => string | null
+  setComponents: (name: string, value: string) => void
 }
 
 export const usePageStore = defineStore('page', (): PageModule => {
-  const route = useRoute()
+  const components = computed(() => state.components)
 
-  const scrollElement = ref<HTMLElement | null>(null)
-  const scrollOptions = ref<UseScrollOptions | undefined>(undefined)
-  const scrollData: UseScrollReturn = useScroll(scrollElement.value, scrollOptions.value)
+  function initComponents(name: string): void {
+    components.value.set(name, new Set())
+  }
 
-  const name = computed<string>(() => (route?.name as string) ?? 'page')
+  function getComponents(name: string, value: string): string | null {
+    const desiredComponents = components.value.get(name)
 
-  const init = (options: PageOptions) => {
-    scrollElement.value = options.scrollElement
-    scrollOptions.value = options.scrollOptions
+    if (!desiredComponents) {
+      return null
+    }
+
+    return desiredComponents.has(value) ? value : null
+  }
+
+  function setComponents(name: string, value: string): void {
+    const desiredComponents = components.value.get(name)
+
+    if (!desiredComponents) {
+      initComponents(name)
+    }
+
+    desiredComponents!.add(value)
   }
 
   return {
-    name,
-    scrollData,
-    init,
+    state,
+
+    components,
+    initComponents,
+    getComponents,
+    setComponents,
   }
 })
 

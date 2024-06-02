@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import ThePage from '@/components/the-components/the-page.vue'
-import TheTop from '@/components/the-components/the-top.vue'
+import TheTop from '@/components/the-components/the-top/index.vue'
 import TheCenter from '@/components/the-components/the-center.vue'
 import TheBottom from '@/components/the-components/the-bottom.vue'
 </script>

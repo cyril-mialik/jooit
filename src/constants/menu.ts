@@ -1,7 +1,6 @@
-import type { Menu } from '@/types/menu'
 import { ROUTE_PATHS } from '@/router/constants'
 
-export const MENU: Menu[] = [
+export const MENU = [
   {
     name: 'Employers',
     url: ROUTE_PATHS.EMPLOYERS,

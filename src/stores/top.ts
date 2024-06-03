@@ -1,60 +1,62 @@
-import type { ComputedRef, DeepReadonly } from 'vue'
+import type { Module, State } from '@/types/top'
+import type { Component } from '@/types/components'
 
 import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { usePageStore } from './page'
 
-import { TOP } from '../constants/components'
-
-
-interface State {
-  component: string | null
-}
+import { NAVIGATION, EMPTY } from '@/constants/components'
+import { MENU } from '@/constants/menu'
+import { COMPONENTS } from '@/constants/top'
 
 const state = reactive<State>({
-  component: null
+  name: EMPTY
 })
 
-interface TopModule {
-  state: DeepReadonly<typeof state>
+export const useTopStore = defineStore('top', (): Module => {
+  const name = computed(() => state.name || EMPTY)
 
-  component: ComputedRef<string | null>
-  getComponent: (name: string) => string | null
-  setComponent: (name: string) => void
+  const components = computed(() => COMPONENTS.map((component) => {
+    let result = { ...component }
 
-  initTop: () => void
-}
+    if (component.name === NAVIGATION) {
+      result = {
+        ...result,
+        props: {
+          list: MENU
+        }
+      }
+    }
 
-export const useTopStore = defineStore('top', (): TopModule => {
-  const {
-    initComponents,
-    getComponents,
-    setComponents
-  } = usePageStore()
+    if (component.name === EMPTY) {
+      result = {
+        ...result,
+        props: {
+          list: MENU
+        }
+      }
+    }
 
-  const component = computed<string | null>(() => state.component)
+    return result
+  }))
 
-  function initTop() {
-    initComponents(TOP)
-  }
+  const desiredComponent = computed(() =>
+    components.value.find((component) => 
+      component.name === name.value && component.name !== EMPTY
+    ) ?? null
+  )
 
-  function getComponent(name: string): string | null {
-    return getComponents(TOP, name)
-  }
+  const fallbackComponent = computed(() =>
+    components.value.find(({ name }) => name === EMPTY) as Component
+  )
 
-  function setComponent(name: string): void {
-    setComponents(TOP, name)
-  }
-
+  const isComponent = computed(() => Boolean(desiredComponent.value))
 
   return {
     state,
-
-    component,
-    getComponent,
-    setComponent,
-
-    initTop
+    components,
+    desiredComponent,
+    fallbackComponent,
+    isComponent
   }
 })
 

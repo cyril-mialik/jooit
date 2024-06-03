@@ -1,14 +1,14 @@
 <script setup lang="ts">
-  import { computed, toRefs } from 'vue'
-  import { useHelper } from './helper'
+  import { storeToRefs } from 'pinia'
+  import { useTopStore } from '@/stores/top'
   import BaseTop from '@/components/base-components/base-top.vue'
 
-  const helper = useHelper()
+  const top = useTopStore()
   const {
     desiredComponent,
     fallbackComponent,
     isComponent
-  } = toRefs(helper)
+  } = storeToRefs(top)
 </script>
 
 <template>

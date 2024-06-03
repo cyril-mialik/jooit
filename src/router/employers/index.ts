@@ -1,14 +1,11 @@
-import EmployersView from '@/views/employers-view.vue'
-import { ROUTE_PATHS, ROUTE_NAMES } from '../constants'
+import { EmployersView } from '@/constants/center'
+import { ROUTE_PATHS, ROUTE_NAMES, DEFAULT_TRANSITION } from '../constants'
 
 export const employersRoute = {
   path: ROUTE_PATHS.EMPLOYERS,
   name: ROUTE_NAMES.EMPLOYERS,
   meta: {
-    transition: {
-      name: 'fade',
-      mode: 'out-in',
-    },
+    transition: { ...DEFAULT_TRANSITION }
   },
   component: EmployersView,
 }

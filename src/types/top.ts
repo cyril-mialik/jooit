@@ -8,8 +8,6 @@ export interface State {
 export interface Module {
   state: DeepReadonly<State>
   components: ComputedRef<Component[]>
-  desiredComponent: ComputedRef<Component | null>
-  fallbackComponent: ComputedRef<Component>
-  isComponent: ComputedRef<boolean>
+  component: ComputedRef<Component>
 }
 

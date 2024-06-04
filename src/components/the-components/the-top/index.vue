@@ -5,24 +5,21 @@
 
   const top = useTopStore()
   const {
-    desiredComponent,
-    fallbackComponent,
-    isComponent
+    component
   } = storeToRefs(top)
 </script>
 
 <template>
   <header class="the-top">
-    <template v-if="isComponent">
       <Suspense>
         <template #default>
           <base-top
             v-slot="{ props }"
-            :key="desiredComponent.name"
-            :props="desiredComponent.props"
+            :key="component.name"
+            :props="component.props"
           >
             <component
-              :is="desiredComponent.self"
+              :is="component.self"
               v-bind="props"
             />
           </base-top>
@@ -32,20 +29,6 @@
           Content is loading...
         </template>
       </Suspense>
-    </template>
-
-    <template v-else>
-      <base-top
-        v-slot="{ props }"
-        :key="fallbackComponent.name"
-        :props="fallbackComponent.props"
-      >
-        <component
-          :is="fallbackComponent.self"
-          v-bind="props"
-        />
-      </base-top>
-    </template>
   </header>
 </template>
 

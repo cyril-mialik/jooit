@@ -1,6 +1,8 @@
 import type { Component } from '@/types/components'
 import { defineAsyncComponent } from 'vue'
-import { NAVIGATION, EMPTY } from './components'
+import { EMPTY } from './common'
+
+export const NAVIGATION = 'navigation'
 
 export const PageNavigation = defineAsyncComponent(() =>
   import('@/components/page-components/page-navigation.vue')

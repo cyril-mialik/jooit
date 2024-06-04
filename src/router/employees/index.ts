@@ -1,9 +1,9 @@
-import { EmployeesView  } from '@/constants/center'
-import { ROUTE_PATHS, ROUTE_NAMES, DEFAULT_TRANSITION } from '../constants'
+import { EmployeesView  } from '@/constants/components/center'
+import { PATHS, NAMES, DEFAULT_TRANSITION } from '@/constants/routes/index'
 
 export const employeesRoute = {
-  path: ROUTE_PATHS.EMPLOYEES,
-  name: ROUTE_NAMES.EMPLOYEES,
+  path: PATHS.EMPLOYEES,
+  name: NAMES.EMPLOYEES,
   meta: {
     transition: { ...DEFAULT_TRANSITION }
   },

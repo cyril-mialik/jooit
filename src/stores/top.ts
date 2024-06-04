@@ -4,9 +4,10 @@ import type { Component } from '@/types/components'
 import { computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 
-import { NAVIGATION, EMPTY } from '@/constants/components'
-import { MENU } from '@/constants/menu'
-import { COMPONENTS } from '@/constants/top'
+import { EMPTY } from '@/constants/components/common'
+import { NAVIGATION } from '@/constants/components/top'
+import { NAVIGATION as MENU_NAVIGATION } from '@/constants/components/navigation'
+import { COMPONENTS } from '@/constants/components/top'
 
 const state = reactive<State>({
   name: EMPTY
@@ -18,20 +19,11 @@ export const useTopStore = defineStore('top', (): Module => {
   const components = computed(() => COMPONENTS.map((component) => {
     let result = { ...component }
 
-    if (component.name === NAVIGATION) {
+    if ([NAVIGATION, EMPTY].includes(component.name)) {
       result = {
         ...result,
         props: {
-          list: MENU
-        }
-      }
-    }
-
-    if (component.name === EMPTY) {
-      result = {
-        ...result,
-        props: {
-          list: MENU
+          list: MENU_NAVIGATION
         }
       }
     }
@@ -39,24 +31,24 @@ export const useTopStore = defineStore('top', (): Module => {
     return result
   }))
 
-  const desiredComponent = computed(() =>
-    components.value.find((component) => 
-      component.name === name.value && component.name !== EMPTY
-    ) ?? null
-  )
+  const component = computed(() => {
+    const desiredComponent = components.value.find((component) => 
+      component.name === name.value
+    )
 
-  const fallbackComponent = computed(() =>
-    components.value.find(({ name }) => name === EMPTY) as Component
-  )
-
-  const isComponent = computed(() => Boolean(desiredComponent.value))
+    if (desiredComponent) {
+      return desiredComponent
+    }
+    
+    return components.value.find((component) =>
+      component.name === EMPTY
+    ) as Component
+  })
 
   return {
     state,
     components,
-    desiredComponent,
-    fallbackComponent,
-    isComponent
+    component
   }
 })
 
